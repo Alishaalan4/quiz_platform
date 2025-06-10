@@ -1,0 +1,231 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Quiz Platform</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/users">Users</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link active" routerLink="/admin/quizzes">Quizzes</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <h3 class="mb-0">{{ isEditMode ? 'Edit Quiz' : 'Create New Quiz' }}</h3>
+    </div>
+    <div class="card-body">
+      <!-- Alerts -->
+      <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" aria-label="Close" (click)="error = ''"></button>
+      </div>
+
+      <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ success }}
+        <button type="button" class="btn-close" aria-label="Close" (click)="success = ''"></button>
+      </div>
+
+      <!-- Quiz Form -->
+      <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
+        <!-- Quiz Details Section -->
+        <div class="card mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Quiz Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="title" 
+                  formControlName="title" 
+                  [ngClass]="{'is-invalid': quizForm.get('title')?.invalid && quizForm.get('title')?.touched}"
+                >
+                <div class="invalid-feedback" *ngIf="quizForm.get('title')?.errors?.['required'] && quizForm.get('title')?.touched">
+                  Title is required
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="totalGrade" class="form-label">Total Grade</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="totalGrade" 
+                  formControlName="totalGrade" 
+                  [ngClass]="{'is-invalid': quizForm.get('totalGrade')?.invalid && quizForm.get('totalGrade')?.touched}"
+                  readonly
+                >
+                <div class="invalid-feedback" *ngIf="quizForm.get('totalGrade')?.errors?.['required'] && quizForm.get('totalGrade')?.touched">
+                  Total grade is required
+                </div>
+                <div class="invalid-feedback" *ngIf="quizForm.get('totalGrade')?.errors?.['min'] && quizForm.get('totalGrade')?.touched">
+                  Total grade must be positive
+                </div>
+                <small class="form-text text-muted">Total grade is calculated from question grades</small>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                class="form-control" 
+                id="description" 
+                formControlName="description" 
+                rows="3"
+                [ngClass]="{'is-invalid': quizForm.get('description')?.invalid && quizForm.get('description')?.touched}"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="quizForm.get('description')?.errors?.['required'] && quizForm.get('description')?.touched">
+                Description is required
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select 
+                  class="form-select" 
+                  id="category" 
+                  formControlName="category"
+                  [ngClass]="{'is-invalid': quizForm.get('category')?.invalid && quizForm.get('category')?.touched}"
+                >
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="quizForm.get('category')?.invalid && quizForm.get('category')?.touched">
+                  Category is required
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select 
+                  class="form-select" 
+                  id="status" 
+                  formControlName="status"
+                  [ngClass]="{'is-invalid': quizForm.get('status')?.invalid && quizForm.get('status')?.touched}"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="quizForm.get('status')?.invalid && quizForm.get('status')?.touched">
+                  Status is required
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Questions Section -->
+        <div formArrayName="questions">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Questions</h5>
+            <button type="button" class="btn btn-primary" (click)="addQuestion()">
+              <i class="bi bi-plus-circle me-2"></i> Add Question
+            </button>
+          </div>
+          
+          <div *ngFor="let questionControl of questionsArray.controls; let i = index" class="card mb-4">
+            <div [formGroupName]="i" class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Question {{ i + 1 }}</h6>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeQuestion(i)">
+                  <i class="bi bi-trash"></i> Remove
+                </button>
+              </div>
+              
+              <div class="mb-3">
+                <label [for]="'questionText' + i" class="form-label">Question Text</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  [id]="'questionText' + i" 
+                  formControlName="text" 
+                  [ngClass]="{'is-invalid': questionControl.get('text')?.invalid && questionControl.get('text')?.touched}"
+                >
+                <div class="invalid-feedback" *ngIf="questionControl.get('text')?.errors?.['required'] && questionControl.get('text')?.touched">
+                  Question text is required
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label [for]="'questionGrade' + i" class="form-label">Question Grade</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  [id]="'questionGrade' + i" 
+                  formControlName="grade" 
+                  [ngClass]="{'is-invalid': questionControl.get('grade')?.invalid && questionControl.get('grade')?.touched}"
+                  (change)="onGradeChange()"
+                >
+                <div class="invalid-feedback" *ngIf="questionControl.get('grade')?.errors?.['required'] && questionControl.get('grade')?.touched">
+                  Grade is required
+                </div>
+                <div class="invalid-feedback" *ngIf="questionControl.get('grade')?.errors?.['min'] && questionControl.get('grade')?.touched">
+                  Grade must be positive
+                </div>
+              </div>
+              
+              <!-- Options Section -->
+              <div formArrayName="options">
+                <h6 class="mb-3">Options</h6>
+                <div *ngFor="let optionControl of getOptionsArray(i).controls; let j = index" class="mb-3">
+                  <div [formGroupName]="j" class="input-group">
+                    <div class="input-group-text">
+                      <input 
+                        type="radio" 
+                        [id]="'correctOption' + i + '-' + j" 
+                        [name]="'correctOption' + i" 
+                        [value]="j" 
+                        [checked]="questionControl.get('correctOptionIndex')?.value === j"
+                        (change)="questionControl.get('correctOptionIndex')?.setValue(j)"
+                      >
+                    </div>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      [id]="'optionText' + i + '-' + j" 
+                      formControlName="text" 
+                      [ngClass]="{'is-invalid': optionControl.get('text')?.invalid && optionControl.get('text')?.touched}"
+                      [placeholder]="'Option ' + (j + 1)"
+                    >
+                    <div class="invalid-feedback" *ngIf="optionControl.get('text')?.errors?.['required'] && optionControl.get('text')?.touched">
+                      Option text is required
+                    </div>
+                  </div>
+                  <small *ngIf="j === questionControl.get('correctOptionIndex')?.value" class="text-success">
+                    <i class="bi bi-check-circle me-1"></i> Correct answer
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="quizForm.invalid">
+            {{ isEditMode ? 'Update Quiz' : 'Create Quiz' }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

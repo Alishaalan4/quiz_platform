@@ -1,0 +1,208 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Quiz Platform</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/admin/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/quizzes">Quizzes</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <button class="btn btn-outline-light" (click)="logout()">
+          <i class="bi bi-box-arrow-right me-2"></i>Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+  <!-- Error Alert -->
+  <div *ngIf="stats.error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error!</strong> {{ stats.error }}
+    <p>There might be an issue with the database connection. Please try again later or contact support.</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="mt-2">
+      <button class="btn btn-outline-danger" (click)="loadDashboardStats()">
+        <i class="bi bi-arrow-clockwise me-1"></i> Try Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Welcome Message -->
+  <div class="mb-4">
+    <h2>Welcome to the Admin Dashboard</h2>
+    <p class="text-muted">Manage your quizzes, users, and view statistics</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div>
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+      <!-- Total Quizzes -->
+      <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="icon-box bg-primary-subtle rounded p-3 me-3">
+                <i class="bi bi-file-earmark-text fs-4 text-primary"></i>
+              </div>
+              <h5 class="card-title mb-0">Total Quizzes</h5>
+            </div>
+            <h2 class="display-6 fw-bold mb-0">{{ stats.totalQuizzes }}</h2>
+            <p class="text-muted small mt-2">All available quizzes</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Users -->
+      <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="icon-box bg-success-subtle rounded p-3 me-3">
+                <i class="bi bi-people fs-4 text-success"></i>
+              </div>
+              <h5 class="card-title mb-0">Total Users</h5>
+            </div>
+            <h2 class="display-6 fw-bold mb-0">{{ stats.totalUsers }}</h2>
+            <p class="text-muted small mt-2">Registered users</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Quizzes -->
+      <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="icon-box bg-info-subtle rounded p-3 me-3">
+                <i class="bi bi-check2-circle fs-4 text-info"></i>
+              </div>
+              <h5 class="card-title mb-0">Completed</h5>
+            </div>
+            <h2 class="display-6 fw-bold mb-0">{{ stats.completedQuizzes }}</h2>
+            <p class="text-muted small mt-2">Completed quizzes</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Quizzes -->
+      <div class="col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="icon-box bg-warning-subtle rounded p-3 me-3">
+                <i class="bi bi-hourglass-split fs-4 text-warning"></i>
+              </div>
+              <h5 class="card-title mb-0">Pending</h5>
+            </div>
+            <h2 class="display-6 fw-bold mb-0">{{ stats.pendingQuizzes }}</h2>
+            <p class="text-muted small mt-2">Pending quizzes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light py-3">
+            <h5 class="mb-0">Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" (click)="navigateTo('/admin/users/create')">
+                  <i class="bi bi-person-plus me-2"></i> Add New User
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-success w-100 d-flex align-items-center justify-content-center" (click)="navigateTo('/admin/quizzes/create')">
+                  <i class="bi bi-file-earmark-plus me-2"></i> Create Quiz
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-info text-white w-100 d-flex align-items-center justify-content-center" (click)="navigateTo('/admin/users')">
+                  <i class="bi bi-people me-2"></i> Manage Users
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="row mb-5" *ngIf="stats.totalQuizzes > 0">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light py-3">
+            <h5 class="mb-0">Quiz Difficulty Levels</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="mb-4">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Easy</span>
+                    <span class="badge bg-success">{{ stats.easyQuizzes || 0 }}</span>
+                  </div>
+                  <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-success" role="progressbar" [style.width]="(stats.easyQuizzes / stats.totalQuizzes * 100) + '%'"></div>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Medium</span>
+                    <span class="badge bg-warning">{{ stats.mediumQuizzes || 0 }}</span>
+                  </div>
+                  <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-warning" role="progressbar" [style.width]="(stats.mediumQuizzes / stats.totalQuizzes * 100) + '%'"></div>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Hard</span>
+                    <span class="badge bg-danger">{{ stats.hardQuizzes || 0 }}</span>
+                  </div>
+                  <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-danger" role="progressbar" [style.width]="(stats.hardQuizzes / stats.totalQuizzes * 100) + '%'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- No Data Message -->
+    <div class="row mb-5" *ngIf="!stats.totalQuizzes">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body text-center py-5">
+            <i class="bi bi-database-x fs-1 text-muted mb-3"></i>
+            <h5>No Quiz Data Available</h5>
+            <p class="text-muted">Create your first quiz to see statistics here.</p>
+            <button class="btn btn-primary mt-2" (click)="navigateTo('/admin/quizzes/create')">
+              <i class="bi bi-plus-circle me-2"></i> Create First Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Admin Login</h1>
+      <p>Access your quiz administration panel</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="alert error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+      
+      <div class="alert success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-with-icon">
+          <i class="icon-email"></i>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+            placeholder="Enter your email"
+          />
+        </div>
+        <div *ngIf="submitted && f['email'].errors" class="error-message">
+          <div *ngIf="f['email'].errors['required']">Email is required</div>
+          <div *ngIf="f['email'].errors['email']">Enter a valid email address</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon">
+          <i class="icon-lock"></i>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div *ngIf="submitted && f['password'].errors" class="error-message">
+          <div *ngIf="f['password'].errors['required']">Password is required</div>
+          <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" [disabled]="loading" class="btn-login">
+          Login
+        </button>
+      </div>
+      
+      <div class="form-footer">
+        <p>Don't have an account? <a routerLink="/admin/register">Register</a></p>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Test Account Info (Remove in production) -->
+  <!-- <div class="test-account">
+    <p>For testing, you can create a new account or use these credentials:</p>
+    <p><strong>Email:</strong> test@example.com</p>
+    <p><strong>Password:</strong> password123</p>
+  </div> -->
+</div>

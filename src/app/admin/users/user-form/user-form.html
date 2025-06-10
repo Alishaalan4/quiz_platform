@@ -1,0 +1,136 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Quiz Platform</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link active" routerLink="/admin/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/quizzes">Quizzes</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <h3 class="mb-0">{{ isEditMode ? 'Edit User' : 'Create New User' }}</h3>
+    </div>
+    <div class="card-body">
+      <!-- Alerts -->
+      <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" aria-label="Close" (click)="error = ''"></button>
+      </div>
+
+      <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ success }}
+        <button type="button" class="btn-close" aria-label="Close" (click)="success = ''"></button>
+      </div>
+
+      <!-- User Form -->
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="name" 
+            formControlName="name" 
+            [ngClass]="{'is-invalid': userForm.get('name')?.invalid && userForm.get('name')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('name')?.errors?.['required'] && userForm.get('name')?.touched">
+            Name is required
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            formControlName="email" 
+            [ngClass]="{'is-invalid': userForm.get('email')?.invalid && userForm.get('email')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['required'] && userForm.get('email')?.touched">
+            Email is required
+          </div>
+          <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['email'] && userForm.get('email')?.touched">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="role" class="form-label">Role</label>
+          <select 
+            class="form-select" 
+            id="role" 
+            formControlName="role"
+            [ngClass]="{'is-invalid': userForm.get('role')?.invalid && userForm.get('role')?.touched}"
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+            Role is required
+          </div>
+        </div>
+
+        <!-- Password fields -->
+        <div class="mb-3" *ngIf="userForm.get('password')">
+          <label for="password" class="form-label">
+            Password 
+            <span *ngIf="isEditMode" class="text-muted">(Leave blank to keep current password)</span>
+          </label>
+          <input 
+            type="password" 
+            class="form-control" 
+            id="password" 
+            formControlName="password" 
+            [ngClass]="{'is-invalid': userForm.get('password')?.invalid && userForm.get('password')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('password')?.errors?.['required'] && userForm.get('password')?.touched">
+            Password is required
+          </div>
+          <div class="invalid-feedback" *ngIf="userForm.get('password')?.errors?.['minlength'] && userForm.get('password')?.touched">
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <!-- Confirm Password field - only for new users -->
+        <div class="mb-3" *ngIf="userForm.get('confirmPassword')">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            id="confirmPassword" 
+            formControlName="confirmPassword" 
+            [ngClass]="{'is-invalid': userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="userForm.get('confirmPassword')?.errors?.['required'] && userForm.get('confirmPassword')?.touched">
+            Please confirm your password
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">
+            {{ isEditMode ? 'Update User' : 'Create User' }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 
