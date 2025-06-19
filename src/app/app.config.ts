@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { QuizService } from './services/quiz.service';
 import { UserService } from './services/user.service';
+import { QuizAttemptService } from './services/quiz-attempt.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection(),
     // Provide our services
     QuizService,
-    UserService
+    UserService,
+    QuizAttemptService
   ]
 };

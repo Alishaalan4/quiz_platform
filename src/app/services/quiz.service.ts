@@ -10,7 +10,8 @@ import {
   collectionData, 
   docData, 
   query, 
-  where 
+  where,
+  getDocs
 } from '@angular/fire/firestore';
 
 export interface Quiz {
@@ -44,8 +45,14 @@ export class QuizService {
   private quizzesLoaded = false;
 
   constructor(private firestore: Firestore) {
-    // Load quizzes initially
-    this.loadQuizzes();
+    // Load quizzes immediately on service initialization
+    this.loadQuizzesImmediate().then(quizzes => {
+      this.quizzes = quizzes;
+      this.quizzesLoaded = true;
+      console.log('Quizzes preloaded into cache:', this.quizzes.length);
+    }).catch(error => {
+      console.error('Error preloading quizzes:', error);
+    });
   }
 
   // Load quizzes into cache
@@ -84,6 +91,37 @@ export class QuizService {
       console.error('Error getting quizzes:', error);
       return throwError(() => new Error('Failed to load quizzes. Please try again later.'));
     }
+  }
+
+  // Get all quizzes immediately as a Promise
+  async loadQuizzesImmediate(): Promise<Quiz[]> {
+    try {
+      // Return cached quizzes if available
+      if (this.quizzesLoaded && this.quizzes.length > 0) {
+        console.log('Returning cached quizzes immediately:', this.quizzes.length);
+        return this.quizzes;
+      }
+      
+      // Otherwise fetch from Firestore
+      const quizzesRef = collection(this.firestore, 'quizzes');
+      const snapshot = await getDocs(quizzesRef);
+      
+      const quizzes: Quiz[] = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        quizzes.push({ ...data, id: doc.id } as Quiz);
+      });
+      
+      return quizzes;
+    } catch (error) {
+      console.error('Error getting quizzes immediately:', error);
+      throw new Error('Failed to load quizzes. Please try again later.');
+    }
+  }
+
+  // Alias for loadQuizzesImmediate for backward compatibility
+  async getQuizzesImmediate(): Promise<Quiz[]> {
+    return this.loadQuizzesImmediate();
   }
 
   // Get a single quiz by ID

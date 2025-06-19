@@ -1,0 +1,77 @@
+<div class="dashboard-container">
+  <nav class="dashboard-navbar">
+    <div class="navbar-brand">Quiz Platform</div>
+    <div class="navbar-user">
+      <a routerLink="/user/dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/user/quizzes" class="nav-link">Quizzes</a>
+      <a routerLink="/user/profile" class="nav-link">Profile</a>
+      <span>{{ userName }}</span>
+      <button class="logout-btn" (click)="logout()">
+        <span>Logout</span>
+        <i class="logout-icon">↪</i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="dashboard-header">
+    <h1>User Dashboard</h1>
+  </div>
+  
+  <div class="dashboard-content">
+    <div class="welcome-card">
+      <h2>Welcome to your Dashboard, {{ userName }}</h2>
+      <p>You are now logged in to the Quiz Platform as a user. This is your personalized dashboard where you'll be able to access all your quizzes and track your progress.</p>
+      <p>Stay tuned for upcoming features and quizzes that will be available soon!</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card available-exams">
+        <div class="stat-icon">📚</div>
+        <div class="stat-content">
+          <h3 class="stat-title">Available Exams</h3>
+          <p class="stat-value">{{ availableExams }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card exams-taken">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h3 class="stat-title">Exams Taken</h3>
+          <p class="stat-value">{{ examsTaken }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card untaken-exams">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+          <h3 class="stat-title">Untaken Exams</h3>
+          <p class="stat-value">{{ untakenExams }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card highest-grade">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-content">
+          <h3 class="stat-title">Highest Grade</h3>
+          <p class="stat-value">{{ highestGrade }}%</p>
+        </div>
+      </div>
+
+      <div class="stat-card quizzes-attempted">
+        <div class="stat-icon">📝</div>
+        <div class="stat-content">
+          <h3 class="stat-title">Quizzes Attempted</h3>
+          <p class="stat-value">{{ quizzesAttempted }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card average-score">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <h3 class="stat-title">Average Score</h3>
+          <p class="stat-value">{{ averageScore }}%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

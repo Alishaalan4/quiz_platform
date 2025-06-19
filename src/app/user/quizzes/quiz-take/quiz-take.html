@@ -1,0 +1,104 @@
+<div class="quiz-take-container">
+  <nav class="dashboard-navbar">
+    <div class="navbar-brand">Quiz Platform</div>
+    <div class="navbar-user">
+      <a routerLink="/user/dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/user/quizzes" class="nav-link">Quizzes</a>
+      <a routerLink="/user/profile" class="nav-link">Profile</a>
+      <span>{{ userName }}</span>
+      <button class="logout-btn" (click)="logout()">
+        <span>Logout</span>
+        <i class="logout-icon">↪</i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Error state -->
+  <div *ngIf="error" class="error-container">
+    <div class="error-message">
+      <h2>Error</h2>
+      <p>{{ error }}</p>
+      <button class="btn-primary" (click)="viewAllQuizzes()">View All Quizzes</button>
+    </div>
+  </div>
+
+  <!-- Quiz in progress -->
+  <div *ngIf="!error && !quizCompleted && quiz" class="quiz-content">
+    <div class="quiz-header">
+      <h1>{{ quiz.title }}</h1>
+      <div class="quiz-info">
+        <span class="quiz-difficulty" [ngClass]="'quiz-difficulty-' + quiz.category">{{ quiz.category }}</span>
+        <span class="quiz-progress">Question {{ currentQuestionIndex + 1 }} of {{ quiz.questions.length }}</span>
+      </div>
+    </div>
+
+    <div class="question-container" *ngIf="currentQuestion">
+      <div class="question-header">
+        <h2 class="question-text">{{ currentQuestion.text }}</h2>
+        <span class="question-grade">{{ currentQuestion.grade }} points</span>
+      </div>
+
+      <div class="options-container">
+        <div 
+          *ngFor="let option of currentQuestion.options; let i = index" 
+          class="option" 
+          [class.selected]="isOptionSelected(i)"
+          (click)="selectOption(i)">
+          <div class="option-marker">{{ ['A', 'B', 'C', 'D', 'E', 'F'][i] }}</div>
+          <div class="option-text">{{ option.text }}</div>
+        </div>
+      </div>
+
+      <div class="question-navigation">
+        <button 
+          *ngIf="!isFirstQuestion()" 
+          class="btn-secondary" 
+          (click)="previousQuestion()">
+          Previous Question
+        </button>
+        <button 
+          *ngIf="!isLastQuestion()" 
+          class="btn-primary" 
+          [disabled]="!isQuestionAnswered()"
+          (click)="nextQuestion()">
+          Next Question
+        </button>
+        <button 
+          *ngIf="isLastQuestion()" 
+          class="btn-submit" 
+          [disabled]="!allQuestionsAnswered()"
+          (click)="submitQuiz()">
+          Submit Quiz
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz completed -->
+  <div *ngIf="quizCompleted && !error" class="quiz-completed">
+    <div class="result-container">
+      <h1>Quiz Completed!</h1>
+      
+      <div class="score-display">
+        <div class="score-circle">
+          <span class="score-percentage">{{ scorePercentage }}%</span>
+        </div>
+        <div class="score-details">
+          <p>Your Score: <strong>{{ finalScore }} / {{ totalGrade }}</strong></p>
+        </div>
+      </div>
+
+      <div class="result-message">
+        <p *ngIf="scorePercentage >= 80">Excellent work! You've mastered this quiz.</p>
+        <p *ngIf="scorePercentage >= 60 && scorePercentage < 80">Good job! You have a solid understanding.</p>
+        <p *ngIf="scorePercentage >= 40 && scorePercentage < 60">Not bad. There's room for improvement.</p>
+        <p *ngIf="scorePercentage < 40">You might want to review the material and try again later.</p>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-secondary" (click)="viewAllQuizzes()">View All Quizzes</button>
+        <button class="btn-primary" (click)="returnToDashboard()">Return to Dashboard</button>
+      </div>
+    </div>
+  </div>
+</div>

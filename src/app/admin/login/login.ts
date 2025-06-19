@@ -32,6 +32,11 @@ export class Login implements OnInit {
 
     // Get return url from route parameters or default to '/admin/dashboard'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/dashboard';
+    
+    // Check for access denied message
+    if (this.route.snapshot.queryParams['accessDenied']) {
+      this.errorMessage = 'Access denied. This area is for administrators only.';
+    }
   }
 
   ngOnInit(): void {
@@ -65,12 +70,28 @@ export class Login implements OnInit {
     const password = this.f['password'].value;
 
     console.log('Attempting login with:', { email, password: '********' });
+    this.loading = true;
 
     this.authService.login(email, password)
       .subscribe({
         next: (result) => {
           console.log('Login successful:', result);
-          this.router.navigate([this.returnUrl]);
+          
+          // Check if the user is an admin
+          setTimeout(() => {
+            const userRole = this.authService.getUserRole();
+            console.log('User role after login:', userRole);
+            
+            if (userRole === 'admin') {
+              this.router.navigate([this.returnUrl]);
+            } else {
+              this.errorMessage = 'Access denied. This login is for administrators only.';
+              this.loading = false;
+              
+              // Logout the user since they're not an admin
+              this.authService.logout().subscribe();
+            }
+          }, 500); // Small delay to ensure Firestore data is loaded
         },
         error: (error) => {
           console.error('Login error:', error);

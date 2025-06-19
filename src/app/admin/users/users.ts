@@ -95,6 +95,6 @@ export class Users implements OnInit, OnDestroy {
   }
   
   createUser() {
-    this.router.navigate(['/admin/users/create']);
+    this.router.navigate(['/admin/users/new']);
   }
 }

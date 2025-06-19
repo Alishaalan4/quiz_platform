@@ -1,0 +1,71 @@
+<div class="quizzes-container">
+  <nav class="dashboard-navbar">
+    <div class="navbar-brand">Quiz Platform</div>
+    <div class="navbar-user">
+      <a routerLink="/user/dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/user/quizzes" class="nav-link active">Quizzes</a>
+      <a routerLink="/user/profile" class="nav-link">Profile</a>
+      <span>{{ userName }}</span>
+      <button class="logout-btn" (click)="logout()">
+        <span>Logout</span>
+        <i class="logout-icon">↪</i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="quizzes-header">
+    <h1>Available Quizzes</h1>
+  </div>
+
+  <div class="quizzes-content">
+    <!-- Error state -->
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <!-- Unattempted Quizzes Section -->
+    <div class="quizzes-section">
+      <h2>Quizzes To Take</h2>
+      <div *ngIf="unattemptedQuizzes.length === 0" class="no-quizzes-message">
+        <p>You have completed all available quizzes!</p>
+      </div>
+      <div class="quizzes-grid">
+        <div *ngFor="let quiz of unattemptedQuizzes" class="quiz-card">
+          <div class="quiz-header">
+            <h3>{{ quiz.title }}</h3>
+            <span [class]="getDifficultyClass(quiz.category)" class="quiz-difficulty">{{ quiz.category }}</span>
+          </div>
+          <p class="quiz-description">{{ quiz.description }}</p>
+          <div class="quiz-footer">
+            <span class="quiz-grade">Total Grade: {{ quiz.totalGrade }}</span>
+            <a [routerLink]="['/user/quizzes/take', quiz.id]" class="take-quiz-btn">Take Quiz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attempted Quizzes Section -->
+    <div class="quizzes-section attempted-section">
+      <h2>Completed Quizzes</h2>
+      <div *ngIf="attemptedQuizzes.length === 0" class="no-quizzes-message">
+        <p>You haven't completed any quizzes yet.</p>
+      </div>
+      <div class="quizzes-grid">
+        <div *ngFor="let quiz of attemptedQuizzes" class="quiz-card completed">
+          <div class="quiz-header">
+            <h3>{{ quiz.title }}</h3>
+            <span [class]="getDifficultyClass(quiz.category)" class="quiz-difficulty">{{ quiz.category }}</span>
+          </div>
+          <p class="quiz-description">{{ quiz.description }}</p>
+          <div class="quiz-footer">
+            <div class="quiz-grades">
+              <span class="quiz-grade">Total Grade: {{ quiz.totalGrade }}</span>
+              <span class="quiz-score">Your Score: {{ getQuizScore(quiz.id!) }}%</span>
+            </div>
+            <span class="completed-badge">Completed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

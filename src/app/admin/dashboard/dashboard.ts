@@ -128,6 +128,13 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   navigateTo(route: string) {
-    this.router.navigate([route]);
+    // Fix the route paths to match the defined routes
+    if (route === '/admin/users/create') {
+      this.router.navigate(['/admin/users/new']);
+    } else if (route === '/admin/quizzes/create') {
+      this.router.navigate(['/admin/quizzes/new']);
+    } else {
+      this.router.navigate([route]);
+    }
   }
 }

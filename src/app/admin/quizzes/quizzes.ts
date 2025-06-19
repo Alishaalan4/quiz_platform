@@ -98,7 +98,7 @@ export class Quizzes implements OnInit, OnDestroy {
   }
   
   createQuiz() {
-    this.router.navigate(['/admin/quizzes/create']);
+    this.router.navigate(['/admin/quizzes/new']);
   }
   
   getCategoryBadgeClass(category: string): string {
