@@ -52,7 +52,6 @@ export class Profile implements OnInit, OnDestroy {
   ) {
     // Initialize form
     this.passwordForm = this.fb.group({
-      currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, {
